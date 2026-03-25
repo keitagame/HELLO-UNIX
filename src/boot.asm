@@ -38,7 +38,15 @@ pd_table:
 
 section .rodata
 gdt64:
-    dq 0                          ; null descriptor
+    dq 0
+gdt64_code:
+    dq (1<<43) | (1<<44) | (1<<47) | (1<<53)
+
+gdt64_desc:
+    dw gdt64_desc_end - gdt64 - 1
+    dq gdt64
+gdt64_desc_end:
+
 .code: equ $ - gdt64
     dq (1<<43) | (1<<44) | (1<<47) | (1<<53)  ; code segment
 .pointer:
@@ -60,25 +68,31 @@ _start:
 
     ; --- Set up paging for long mode ---
     ; PML4[0] -> PDP
-    mov eax, pdp_table
-    or eax, 0x3           ; present + writable
-    mov [pml4_table], eax
+   ; PML4[0] = PDP
+mov eax, pdp_table
+or eax, 0x3
+mov dword [pml4_table], eax
+mov dword [pml4_table+4], 0
 
-    ; PDP[0] -> PD
-    mov eax, pd_table
-    or eax, 0x3
-    mov [pdp_table], eax
+; PDP[0] = PD
+mov eax, pd_table
+or eax, 0x3
+mov dword [pdp_table], eax
+mov dword [pdp_table+4], 0
 
-    ; PD: 4 entries × 2MB = 8MB identity map
-    mov ecx, 0
+; PD entries (2MiB pages)
+mov ecx, 0
 .map_pd:
-    mov eax, 0x200000       ; 2MB
+    mov eax, 0x200000
     mul ecx
-    or eax, 0x83            ; present + writable + huge page
-    mov [pd_table + ecx * 8], eax
+    or eax, 0x83
+    mov dword [pd_table + ecx*8], eax
+    mov dword [pd_table + ecx*8 + 4], 0
     inc ecx
     cmp ecx, 4
     jne .map_pd
+
+
 
     ; Load PML4
     mov eax, pml4_table
@@ -101,10 +115,12 @@ _start:
     mov cr0, eax
 
     ; Load 64-bit GDT
-    lgdt [gdt64.pointer]
+    ;lgdt [gdt64.pointer]
 
     ; Far jump to 64-bit code
-    jmp gdt64.code:long_mode_start
+    ;jmp gdt64.code:long_mode_start
+lgdt [gdt64_desc]
+jmp 0x08:long_mode_start
 
 .error:
     ; Write 'ERR' to VGA
