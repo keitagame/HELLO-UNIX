@@ -29,7 +29,7 @@ libkernel.a: src/main.rs
 
 # 2. Assemble boot stub
 boot.o: src/boot.asm
-	$(NASM) -f elf32 src/boot.asm -o $@
+	$(NASM) -f elf64 src/boot.asm -o $@
 
 # 3. Link everything
 $(KERNEL_ELF): boot.o libkernel.a linker.ld

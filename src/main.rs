@@ -56,32 +56,35 @@ fn put_str_at(s: &[u8], fg: Color, bg: Color, row: usize, col: usize) {
     }
 }
 static ASCII_ART: &[&[u8]] = &[
-    b" /$$   /$$ /$$$$$$$$ /$$       /$$        /$$$$$$        /$$   /$$ /$$   /$$ /$$$$$$ /$$   /$$",
+    b"/$$   /$$ /$$$$$$$$ /$$       /$$        /$$$$$$        /$$   /$$ /$$   /$$ /$$$$$$ /$$   /$$",
     b"| $$  | $$| $$_____/| $$      | $$       /$$__  $$      | $$  | $$| $$$ | $$|_  $$_/| $$  / $$",
-    b"| $$  | $$| $$      | $$      | $$      | $$  \ $$      | $$  | $$| $$$$| $$  | $$  |  $$/ $$/",
-    b"| $$$$$$$$| $$$$$   | $$      | $$      | $$  | $$      | $$  | $$| $$ $$ $$  | $$  \\  $$$$/ ",
+    b"| $$  | $$| $$      | $$      | $$      | $$  \\ $$      | $$  | $$| $$$$| $$  | $$  |  $$/ $$/",
+    b"| $$$$$$$$| $$$$$   | $$      | $$      | $$  | $$      | $$  | $$| $$ $$ $$  | $$   \\  $$$$/ ",
     b"| $$__  $$| $$__/   | $$      | $$      | $$  | $$      | $$  | $$| $$  $$$$  | $$    >$$  $$ ",
-    b"| $$  | $$| $$      | $$      | $$      | $$  | $$      | $$  | $$| $$\\  $$$ | $$   /$$/\\  $$",
-    b"| $$  | $$| $$$$$$$$| $$$$$$$$| $$$$$$$$|  $$$$$$/      |  $$$$$$/| $$ \\  $$/$$$$$$| $$  \\ $$",
-    b"|__/  |__/|________/|________/|________/ \\______/      \\______/ |__/  \\__/|______/|__/  |__/",
+    b"| $$  | $$| $$      | $$      | $$      | $$  | $$      | $$  | $$| $$\\  $$$  | $$   /$$/\\  $$",
+    b"| $$  | $$| $$$$$$$$| $$$$$$$$| $$$$$$$$|  $$$$$$/      |  $$$$$$/| $$ \\  $$ /$$$$$$| $$  \\ $$",
+    b"|__/  |__/|________/|________/|________/ \\______/        \\______/ |__/  \\__/|______/|__/  |__/",
+    b"",
+    b"",
     b"",
 ];
+
 
 // The ASCII art (Ferris the crab!)
-static ASCII_ART: &[&[u8]] = &[
-    b"",
-    b"",
-    b"   _~^~^~_",
-    b" \\) /  o o  \\ (/",
-    b"   '_   -   _'",
-    b"   / '-----' \\",
-    b"",
-    b"  Ferris  Says:",
-    b"",
-];
+//static ASCII_ART: &[&[u8]] = &[
+//    b"",
+//    b"",
+//    b"   _~^~^~_",
+//    b" \\) /  o o  \\ (/",
+//    b"   '_   -   _'",
+//    b"   / '-----' \\",
+//    b"",
+//    b"  Ferris  Says:",
+//    b"",
+//];
 
 static BANNER: &[u8]  = b"  +--------------------------------------------------+";
-static BANNER2: &[u8] = b"  |       Welcome to RustOS - Powered by Rust!       |";
+static BANNER2: &[u8] = b"  |             Welcome to HELLO UNIX                |";
 static BANNER3: &[u8] = b"  +--------------------------------------------------+";
 
 static MSG1: &[u8] = b"  Architecture : x86_64";
@@ -94,45 +97,39 @@ static MSG6: &[u8] = b"  System halted. Press CTRL+ALT+DEL to reboot.";
 #[no_mangle]
 pub extern "C" fn kernel_main() -> ! {
     // Dark blue background
-    clear_screen(Color::White, Color::Blue);
+    clear_screen(Color::White, Color::Black);
 
     // Top banner
-    put_str_at(BANNER,  Color::Yellow, Color::Blue, 1, 14);
-    put_str_at(BANNER2, Color::Yellow, Color::Blue, 2, 14);
-    put_str_at(BANNER3, Color::Yellow, Color::Blue, 3, 14);
+    put_str_at(BANNER,  Color::White, Color::Black, 1, 14);
+    put_str_at(BANNER2, Color::White, Color::Black, 2, 14);
+    put_str_at(BANNER3, Color::White, Color::Black, 3, 14);
 
     // ASCII art (Ferris) - centered ish, with color cycling per line
     let art_colors = [
-        Color::LightCyan,
-        Color::LightGreen,
-        Color::Pink,
-        Color::LightRed,
-        Color::Yellow,
-        Color::LightCyan,
         Color::White,
-        Color::LightGreen,
-        Color::White,
+        
+       
     ];
 
     let art_start_row = 5;
-    let art_col = 28;
+    let art_col = 0;
     for (i, line) in ASCII_ART.iter().enumerate() {
         let color = art_colors[i % art_colors.len()];
-        put_str_at(line, color, Color::Blue, art_start_row + i, art_col);
+        put_str_at(line, color, Color::Black, art_start_row + i, art_col);
     }
 
     // System info
     let info_row = 15;
     let info_col = 14;
-    put_str_at(MSG1, Color::LightGreen,  Color::Blue, info_row,     info_col);
-    put_str_at(MSG2, Color::LightGreen,  Color::Blue, info_row + 1, info_col);
-    put_str_at(MSG3, Color::LightGreen,  Color::Blue, info_row + 2, info_col);
-    put_str_at(MSG4, Color::LightGreen,  Color::Blue, info_row + 3, info_col);
-    put_str_at(MSG5, Color::White,       Color::Blue, info_row + 4, info_col);
-    put_str_at(MSG6, Color::LightRed,    Color::Blue, info_row + 5, info_col);
+    put_str_at(MSG1, Color::White,  Color::Black, info_row,     info_col);
+    put_str_at(MSG2, Color::White,  Color::Black, info_row + 1, info_col);
+    put_str_at(MSG3, Color::White,  Color::Black, info_row + 2, info_col);
+    put_str_at(MSG4, Color::White,  Color::Black, info_row + 3, info_col);
+    put_str_at(MSG5, Color::White,       Color::Black, info_row + 4, info_col);
+    put_str_at(MSG6, Color::White,    Color::Black, info_row + 5, info_col);
 
     // Bottom border
-    put_str_at(BANNER, Color::Yellow, Color::Blue, 22, 14);
+    put_str_at(BANNER, Color::White, Color::Black, 22, 14);
 
     // Halt
     loop {
