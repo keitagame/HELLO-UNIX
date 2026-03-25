@@ -100,9 +100,9 @@ pub extern "C" fn kernel_main() -> ! {
     clear_screen(Color::White, Color::Black);
 
     // Top banner
-    put_str_at(BANNER,  Color::White, Color::Black, 1, 14);
-    put_str_at(BANNER2, Color::White, Color::Black, 2, 14);
-    put_str_at(BANNER3, Color::White, Color::Black, 3, 14);
+    //put_str_at(BANNER,  Color::White, Color::Black, 1, 14);
+    //put_str_at(BANNER2, Color::White, Color::Black, 2, 14);
+    //put_str_at(BANNER3, Color::White, Color::Black, 3, 14);
 
     // ASCII art (Ferris) - centered ish, with color cycling per line
     let art_colors = [
@@ -121,15 +121,15 @@ pub extern "C" fn kernel_main() -> ! {
     // System info
     let info_row = 15;
     let info_col = 14;
-    put_str_at(MSG1, Color::White,  Color::Black, info_row,     info_col);
-    put_str_at(MSG2, Color::White,  Color::Black, info_row + 1, info_col);
-    put_str_at(MSG3, Color::White,  Color::Black, info_row + 2, info_col);
-    put_str_at(MSG4, Color::White,  Color::Black, info_row + 3, info_col);
-    put_str_at(MSG5, Color::White,       Color::Black, info_row + 4, info_col);
-    put_str_at(MSG6, Color::White,    Color::Black, info_row + 5, info_col);
+    //put_str_at(MSG1, Color::White,  Color::Black, info_row,     info_col);
+    //put_str_at(MSG2, Color::White,  Color::Black, info_row + 1, info_col);
+    //put_str_at(MSG3, Color::White,  Color::Black, info_row + 2, info_col);
+    //put_str_at(MSG4, Color::White,  Color::Black, info_row + 3, info_col);
+    //put_str_at(MSG5, Color::White,       Color::Black, info_row + 4, info_col);
+    //put_str_at(MSG6, Color::White,    Color::Black, info_row + 5, info_col);
 
     // Bottom border
-    put_str_at(BANNER, Color::White, Color::Black, 22, 14);
+    //put_str_at(BANNER, Color::White, Color::Black, 22, 14);
 
     // Halt
     loop {
