@@ -243,12 +243,7 @@ pub extern "C" fn kernel_main(magic: u32, mbi_phys: u32) -> ! {
     // System info
     let info_row = 15;
     let info_col = 14;
-    //put_str_at(MSG1, Color::White,  Color::Black, info_row,     info_col);
-    //put_str_at(MSG2, Color::White,  Color::Black, info_row + 1, info_col);
-    //put_str_at(MSG3, Color::White,  Color::Black, info_row + 2, info_col);
-    //put_str_at(MSG4, Color::White,  Color::Black, info_row + 3, info_col);
-    //put_str_at(MSG5, Color::White,       Color::Black, info_row + 4, info_col);
-    //put_str_at(MSG6, Color::White,    Color::Black, info_row + 5, info_col);
+    
     kprint("Architecture : x86_64");
     // Bottom border
     //put_str_at(BANNER, Color::White, Color::Black, 22, 14);
