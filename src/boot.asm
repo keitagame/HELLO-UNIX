@@ -21,7 +21,11 @@ multiboot2_header_start:
     dd 8
 multiboot2_header_end:
 
+
 section .bss
+align 8
+saved_magic:   resd 1
+saved_mbi:     resd 1
 align 16
 stack_bottom:
     resb 16384
@@ -61,7 +65,8 @@ _start:
     mov esp, stack_top
     push 0
     popf
-
+    mov [saved_magic], eax
+    mov [saved_mbi],   ebx
     ; --- Check multiboot2 ---
     cmp eax, 0x36D76289
     jne .error
@@ -140,7 +145,10 @@ long_mode_start:
     mov es, ax
     mov fs, ax
     mov gs, ax
-
+    mov eax, dword [saved_magic]
+    mov ebx, dword [saved_mbi]
+    mov edi, eax        ; 第1引数 (u32 magic)
+    mov esi, ebx        ; 第2引数 (u32 mbi_phys)
     call kernel_main
 
 .hang:
