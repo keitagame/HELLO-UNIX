@@ -30,6 +30,40 @@ struct MultibootInfo {
 }
 static mut CURSOR: usize = 0;
 
+static mut CURSOR_ROW: usize = 0;
+static mut CURSOR_COL: usize = 0;
+
+fn put_char(ch: u8, fg: Color, bg: Color) {
+    unsafe {
+        // 画面外なら無視（スクロールは後で実装）
+        if CURSOR_ROW >= VGA_HEIGHT {
+            return;
+        }
+
+        let index = CURSOR_ROW * VGA_WIDTH + CURSOR_COL;
+        *VGA_BUFFER.add(index) = vga_entry(ch, fg, bg);
+
+        CURSOR_COL += 1;
+
+        // 行末に来たら改行
+        if CURSOR_COL >= VGA_WIDTH {
+            CURSOR_COL = 0;
+            CURSOR_ROW += 1;
+        }
+    }
+}
+fn kprint(s: &str) {
+    for &b in s.as_bytes() {
+        if b == b'\n' {
+            unsafe {
+                CURSOR_COL = 0;
+                CURSOR_ROW += 1;
+            }
+        } else {
+            put_char(b, Color::White, Color::Black);
+        }
+    }
+}
 fn kprint_hex(mut value: u64) {
     for i in (0..16).rev() {
         let nibble = ((value >> (i * 4)) & 0xF) as u8;
@@ -37,21 +71,10 @@ fn kprint_hex(mut value: u64) {
             0..=9 => b'0' + nibble,
             _ => b'A' + (nibble - 10),
         };
-        unsafe {
-            *VGA_BUFFER.add(CURSOR) = vga_entry(ch, Color::White, Color::Black);
-            CURSOR += 1;
-        }
+        put_char(ch, Color::White, Color::Black);
     }
 }
 
-fn kprint(s: &str) {
-    // VGA に 1 行出力する簡易版
-    for (i, b) in s.bytes().enumerate() {
-        unsafe {
-            *VGA_BUFFER.add(i) = vga_entry(b, Color::White, Color::Black);
-        }
-    }
-}
 unsafe fn find_mmap_tag(mbi: *const u8) -> Option<*const MmapTag> {
     let total_size = *(mbi as *const u32);
     let mut offset = 8; // total_size + reserved の後
@@ -207,6 +230,11 @@ pub extern "C" fn kernel_main(magic: u32, mbi_phys: u32) -> ! {
 
     let art_start_row = 0;
     let art_col = 0;
+    unsafe {
+    CURSOR_ROW = art_start_row + ASCII_ART.len();
+    CURSOR_COL = 0;
+}
+
     for (i, line) in ASCII_ART.iter().enumerate() {
         let color = art_colors[i % art_colors.len()];
         put_str_at(line, color, Color::Black, art_start_row + i, art_col);
