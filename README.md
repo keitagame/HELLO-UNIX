@@ -1,1 +1,2 @@
 # HELLO-UNIX
+UNIX互換カーネル
